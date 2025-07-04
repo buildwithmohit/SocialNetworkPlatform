@@ -1,0 +1,510 @@
+type AccountType = variant { Personal; Business; Creator };
+type ActivityAction = variant {
+  Login;
+  PostCommented;
+  PostCreated;
+  MessageSent;
+  Logout;
+  StoryViewed;
+  ProfileVisited;
+  PostLiked;
+  UserFollowed;
+};
+type ActivityInsights = record {
+  posts_created : nat32;
+  likes_given : nat32;
+  messages_sent : nat32;
+  weekly_summary : vec DailyActivity;
+  user_id : text;
+  stories_created : nat32;
+  daily_average : nat64;
+  most_active_hour : nat8;
+  comments_made : nat32;
+  total_time_spent : nat64;
+};
+type Analytics = record {
+  post_id : opt text;
+  shares : nat64;
+  views : nat64;
+  date : nat64;
+  impressions : nat64;
+  user_id : text;
+  likes : nat64;
+  saves : nat64;
+  website_clicks : nat64;
+  comments : nat64;
+  story_id : opt text;
+  profile_visits : nat64;
+  reach : nat64;
+};
+type Comment = record {
+  updated_at : nat64;
+  post_id : text;
+  content : text;
+  username : text;
+  is_pinned : bool;
+  parent_comment_id : opt text;
+  created_at : nat64;
+  user_id : text;
+  replies_count : nat64;
+  mentions : vec text;
+  comment_id : text;
+  likes_count : nat64;
+};
+type ContentType = variant { Story; Live; Reel; Photo; Carousel; Video };
+type Conversation = record {
+  group_photo : opt text;
+  updated_at : nat64;
+  participants : vec text;
+  conversation_id : text;
+  last_message : opt Message;
+  conversation_type : ConversationType;
+  created_at : nat64;
+  is_archived : bool;
+  admins : vec text;
+  group_name : opt text;
+};
+type ConversationType = variant { Group; Direct };
+type CreatePostRequest = record {
+  hashtags : vec text;
+  media_urls : vec text;
+  tagged_users : vec text;
+  content_type : ContentType;
+  product_tags : vec ProductTag;
+  music_info : opt MusicInfo;
+  caption : text;
+  visibility : PostVisibility;
+  location : opt LocationTag;
+};
+type CreateUserProfileRequest = record {
+  bio : opt text;
+  username : text;
+  profile_picture : opt text;
+  is_private : opt bool;
+  email : opt text;
+  website : opt text;
+  display_name : text;
+  gender : opt text;
+  date_of_birth : opt nat64;
+  phone : opt text;
+  location : opt text;
+  account_type : AccountType;
+};
+type DailyActivity = record {
+  day : text;
+  stories : nat32;
+  interactions : nat32;
+  posts : nat32;
+  time_spent : nat64;
+};
+type Hashtag = record { name : text; posts_count : nat64; is_trending : bool };
+type LocationTag = record {
+  latitude : float64;
+  name : text;
+  posts_count : nat64;
+  longitude : float64;
+  place_id : opt text;
+};
+type Message = record {
+  is_read : bool;
+  content : text;
+  recipient_id : text;
+  reply_to : opt text;
+  is_vanish_mode : bool;
+  conversation_id : text;
+  created_at : nat64;
+  sender_id : text;
+  media_url : opt text;
+  message_type : MessageType;
+  message_id : text;
+  expires_at : opt nat64;
+  reactions : vec record { text; vec text };
+};
+type MessageType = variant {
+  Gif;
+  Story;
+  Post;
+  Reel;
+  Text;
+  Photo;
+  Sticker;
+  Location;
+  Video;
+  Voice;
+  Contact;
+};
+type MusicInfo = record {
+  duration : nat32;
+  track_id : text;
+  start_time : nat32;
+  artist_name : text;
+  track_name : text;
+};
+type Notification = record {
+  read_at : opt nat64;
+  is_read : bool;
+  title : text;
+  action_user_id : opt text;
+  post_id : opt text;
+  created_at : nat64;
+  user_id : text;
+  notification_id : text;
+  notification_type : NotificationType;
+  message : text;
+  comment_id : opt text;
+};
+type NotificationSettings = record {
+  comments_enabled : bool;
+  push_notifications : bool;
+  email_notifications : bool;
+  user_id : text;
+  tags_enabled : bool;
+  messages_enabled : bool;
+  story_views_enabled : bool;
+  likes_enabled : bool;
+  follows_enabled : bool;
+  mentions_enabled : bool;
+};
+type NotificationType = variant {
+  Tag;
+  Request;
+  Story;
+  System;
+  Follow;
+  Like;
+  Live;
+  Comment;
+  Message;
+  Mention;
+};
+type Post = record {
+  updated_at : nat64;
+  post_id : text;
+  username : text;
+  post_type : null;
+  hashtags : vec text;
+  shares_count : nat64;
+  media_urls : vec text;
+  tagged_users : vec text;
+  content_type : ContentType;
+  created_at : nat64;
+  user_id : text;
+  is_archived : bool;
+  product_tags : vec ProductTag;
+  music_info : opt MusicInfo;
+  caption : text;
+  comments_count : nat64;
+  visibility : PostVisibility;
+  location : opt LocationTag;
+  likes_count : nat64;
+};
+type PostVisibility = variant { Private; Followers; Public; CloseFriends };
+type Product = record {
+  product_id : text;
+  inventory_count : opt nat32;
+  name : text;
+  description : text;
+  created_at : nat64;
+  shop_id : text;
+  currency : text;
+  category : text;
+  is_available : bool;
+  price : text;
+  images : vec text;
+};
+type ProductTag = record {
+  product_id : text;
+  x_position : float32;
+  product_name : text;
+  price : opt text;
+  shop_name : text;
+  y_position : float32;
+};
+type Report = record {
+  report_id : text;
+  status : ReportStatus;
+  reported_post_id : opt text;
+  description : text;
+  created_at : nat64;
+  reported_user_id : opt text;
+  reported_comment_id : opt text;
+  reporter_id : text;
+  resolved_at : opt nat64;
+  reason : ReportReason;
+};
+type ReportReason = variant {
+  SelfHarm;
+  InappropriateContent;
+  IntellectualProperty;
+  Violence;
+  Hate;
+  Spam;
+  Harassment;
+  Other;
+};
+type ReportStatus = variant { UnderReview; Dismissed; Resolved; Pending };
+type Result = variant { Ok; Err : text };
+type Result_1 = variant { Ok : Product; Err : text };
+type Result_10 = variant { Ok : vec Comment; Err : text };
+type Result_11 = variant { Ok : vec Conversation; Err : text };
+type Result_12 = variant { Ok : vec text; Err : text };
+type Result_13 = variant { Ok : vec Message; Err : text };
+type Result_14 = variant { Ok : vec LocationTag; Err : text };
+type Result_15 = variant { Ok : NotificationSettings; Err : text };
+type Result_16 = variant { Ok : vec Notification; Err : text };
+type Result_17 = variant { Ok : Analytics; Err : text };
+type Result_18 = variant { Ok : vec Product; Err : text };
+type Result_19 = variant { Ok : opt nat32; Err : text };
+type Result_2 = variant { Ok : UserProfile; Err : text };
+type Result_20 = variant { Ok : vec Hashtag; Err : text };
+type Result_21 = variant { Ok : nat32; Err : text };
+type Result_22 = variant { Ok : ActivityInsights; Err : text };
+type Result_23 = variant { Ok : vec Story; Err : text };
+type Result_24 = variant { Ok : Message; Err : text };
+type Result_25 = variant { Ok : Report; Err : text };
+type Result_26 = variant { Ok : SearchResults; Err : text };
+type Result_27 = variant { Ok : Notification; Err : text };
+type Result_3 = variant { Ok : Post; Err : text };
+type Result_4 = variant { Ok : Comment; Err : text };
+type Result_5 = variant { Ok : Conversation; Err : text };
+type Result_6 = variant { Ok : vec UserProfile; Err : text };
+type Result_7 = variant { Ok : Shop; Err : text };
+type Result_8 = variant { Ok : Story; Err : text };
+type Result_9 = variant { Ok : vec Post; Err : text };
+type SearchResults = record {
+  hashtags : vec Hashtag;
+  users : vec UserProfile;
+  locations : vec LocationTag;
+  posts : vec Post;
+};
+type SearchType = variant { All; Hashtags; Users; Posts; Locations; Audio };
+type Shop = record {
+  name : text;
+  contact_email : text;
+  description : text;
+  created_at : nat64;
+  user_id : text;
+  website : opt text;
+  shop_id : text;
+  is_verified : bool;
+  products : vec Product;
+};
+type Sticker = record {
+  rotation : float32;
+  content : text;
+  x_position : float32;
+  sticker_type : StickerType;
+  scale : float32;
+  y_position : float32;
+};
+type StickerType = variant {
+  Gif;
+  Question;
+  Emoji;
+  Countdown;
+  Poll;
+  Quiz;
+  AddYours;
+  Mention;
+  Slider;
+  Location;
+  Hashtag;
+};
+type Story = record {
+  username : text;
+  is_highlight : bool;
+  highlight_id : opt text;
+  text_overlay : opt text;
+  created_at : nat64;
+  user_id : text;
+  music_info : opt MusicInfo;
+  viewers : vec text;
+  story_type : StoryType;
+  media_url : text;
+  stickers : vec Sticker;
+  expires_at : nat64;
+  story_id : text;
+};
+type StoryType = variant { Boomerang; Photo; Layout; Video };
+type UpdateUserProfileRequest = record {
+  bio : opt text;
+  profile_picture : opt text;
+  is_private : opt bool;
+  website : opt text;
+  links : opt vec text;
+  display_name : opt text;
+  location : opt text;
+};
+type UserActivity = record {
+  action : ActivityAction;
+  target_id : opt text;
+  created_at : nat64;
+  user_id : text;
+  target_type : opt text;
+};
+type UserProfile = record {
+  bio : text;
+  updated_at : nat64;
+  username : text;
+  profile_picture : opt text;
+  following_count : nat64;
+  posts_count : nat64;
+  is_private : bool;
+  created_at : nat64;
+  user_id : text;
+  email : opt text;
+  website : opt text;
+  links : vec text;
+  display_name : text;
+  is_verified : bool;
+  gender : opt text;
+  date_of_birth : opt nat64;
+  phone : opt text;
+  followers_count : nat64;
+  location : opt text;
+  account_type : AccountType;
+};
+service : () -> {
+  add_keyword_filter : (text) -> (Result);
+  add_participant_to_group : (text, text) -> (Result);
+  add_product : (text, text, text, text, text, vec text, text, opt nat32) -> (
+      Result_1,
+    );
+  add_profile_link : (text) -> (Result_2);
+  add_reaction_to_message : (text, text) -> (Result);
+  add_to_close_friends : (text) -> (Result);
+  add_website_link : (text) -> (Result_2);
+  archive_post : (text) -> (Result_3);
+  block_user : (text) -> (Result);
+  comment_on_post : (text, text) -> (Result_4);
+  create_close_friends_list : (vec text) -> (Result);
+  create_group_chat : (vec text, text, opt text) -> (Result_5);
+  create_multiple_profiles : (nat32) -> (Result_6);
+  create_post : (CreatePostRequest) -> (Result_3);
+  create_shop : (text, text, opt text, text) -> (Result_7);
+  create_story : (text, StoryType, opt text, vec Sticker, opt MusicInfo) -> (
+      Result_8,
+    );
+  create_user_profile : (CreateUserProfileRequest) -> (Result_2);
+  delete_message : (text) -> (Result);
+  delete_notification : (text) -> (Result);
+  delete_post : (text) -> (Result);
+  delete_product : (text) -> (Result);
+  delete_user_profile : () -> (Result);
+  disable_two_factor_auth : () -> (Result);
+  disable_vanish_mode : (text) -> (Result);
+  enable_two_factor_auth : () -> (Result);
+  enable_vanish_mode : (text) -> (Result);
+  follow_user : (text) -> (Result);
+  get_all_profiles : () -> (Result_6) query;
+  get_archived_posts : (nat32, nat32) -> (Result_9) query;
+  get_blocked_users : () -> (vec text) query;
+  get_close_friends : () -> (Result_6) query;
+  get_comment_replies : (text, nat32, nat32) -> (Result_10) query;
+  get_conversations : (nat32, nat32) -> (Result_11) query;
+  get_current_user_profile : () -> (Result_2) query;
+  get_explore_content : (opt nat32) -> (Result_9) query;
+  get_feed : (opt nat32, opt nat32) -> (Result_9) query;
+  get_followers : (text, nat32, nat32) -> (Result_6) query;
+  get_following : (text, nat32, nat32) -> (Result_6) query;
+  get_keyword_filters : () -> (Result_12) query;
+  get_messages : (text, opt nat32) -> (Result_13) query;
+  get_muted_users : () -> (vec text) query;
+  get_nearby_locations : (float64, float64, float64) -> (Result_14) query;
+  get_notification_settings : () -> (Result_15) query;
+  get_notifications : (nat32, nat32) -> (Result_16) query;
+  get_online_status : (text) -> (bool) query;
+  get_post : (text) -> (Result_3) query;
+  get_post_comments : (text, nat32, nat32) -> (Result_10) query;
+  get_posts_by_hashtag : (text, nat32, nat32) -> (Result_9) query;
+  get_posts_by_location : (LocationTag, nat32, nat32) -> (Result_9) query;
+  get_product_details : (text) -> (Result_1) query;
+  get_profile_analytics : (text) -> (Result_17) query;
+  get_public_profile_info : (text) -> (Result_2) query;
+  get_restricted_users : () -> (vec text) query;
+  get_saved_posts : (nat32, nat32) -> (Result_9) query;
+  get_shop_products : (text, nat32, nat32) -> (Result_18) query;
+  get_suggested_users : (nat32) -> (Result_6) query;
+  get_time_limit : () -> (Result_19) query;
+  get_trending_hashtags : (nat32) -> (Result_20) query;
+  get_trending_posts : (nat32) -> (Result_9) query;
+  get_unread_notification_count : () -> (Result_21) query;
+  get_user_activity : (text) -> (vec UserActivity) query;
+  get_user_activity_insights : () -> (Result_22) query;
+  get_user_info : (text) -> (Result_2) query;
+  get_user_posts : (text, nat32, nat32) -> (Result_9) query;
+  get_user_profile : (text) -> (Result_2) query;
+  get_user_stories : (text) -> (Result_23) query;
+  greet : (text) -> (text) query;
+  is_development_mode : () -> (bool) query;
+  leave_group : (text) -> (Result);
+  like_post : (text) -> (Result);
+  make_group_admin : (text, text) -> (Result);
+  mark_all_notifications_as_read : () -> (Result);
+  mark_conversation_as_read : (text) -> (Result);
+  mark_message_as_read : (text) -> (Result);
+  mark_notification_as_read : (text) -> (Result);
+  mute_user : (text) -> (Result);
+  register_user : (text) -> (Result);
+  remove_from_close_friends : (text) -> (Result);
+  remove_keyword_filter : (text) -> (Result);
+  remove_participant_from_group : (text, text) -> (Result);
+  remove_profile_link : (text) -> (Result_2);
+  remove_profile_picture : () -> (Result_2);
+  remove_reaction_from_message : (text, text) -> (Result);
+  reply_to_comment : (text, text) -> (Result_4);
+  reply_to_message : (text, text, MessageType) -> (Result_24);
+  report_content : (opt text, opt text, opt text, ReportReason, text) -> (
+      Result_25,
+    );
+  reset_to_development : () -> (Result);
+  restrict_user : (text) -> (Result);
+  save_post : (text, opt text) -> (Result);
+  search_content : (text, SearchType) -> (Result_26) query;
+  search_products : (text, opt text, opt float64, opt float64, nat32) -> (
+      Result_18,
+    ) query;
+  search_users : (text, nat32) -> (vec UserProfile) query;
+  send_media_message : (text, text, MessageType, opt text) -> (Result_24);
+  send_message : (text, text, MessageType) -> (Result_24);
+  send_notification : (
+      text,
+      NotificationType,
+      text,
+      text,
+      opt text,
+      opt text,
+      opt text,
+    ) -> (Result_27);
+  set_online_status : (bool) -> (Result);
+  set_production_mode : (vec text) -> (Result);
+  set_time_limit : (nat32) -> (Result);
+  share_post : (text, vec text) -> (Result);
+  switch_account_type : (AccountType) -> (Result_2);
+  toggle_privacy_setting : () -> (Result_2);
+  unarchive_post : (text) -> (Result_3);
+  unblock_user : (text) -> (Result);
+  unfollow_user : (text) -> (Result);
+  unlike_post : (text) -> (Result);
+  unmute_user : (text) -> (Result);
+  unrestrict_user : (text) -> (Result);
+  unsave_post : (text) -> (Result);
+  update_bio : (text) -> (Result_2);
+  update_comment_controls : (bool, vec text, bool) -> (Result);
+  update_last_seen : () -> (Result);
+  update_notification_settings : (vec NotificationType, bool) -> (Result);
+  update_post : (text, opt text, opt vec text) -> (Result_3);
+  update_privacy_settings : (bool, bool, bool) -> (Result);
+  update_product : (
+      text,
+      opt text,
+      opt text,
+      opt text,
+      opt bool,
+      opt nat32,
+    ) -> (Result_1);
+  update_profile_picture : (text) -> (Result_2);
+  update_user_profile : (UpdateUserProfileRequest) -> (Result_2);
+  verify_account : (text) -> (Result_2);
+  view_story : (text) -> (Result_8);
+}
