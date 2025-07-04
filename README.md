@@ -1,4 +1,5 @@
 # `OnChain360`
+OnChain360 is a 100% on-chain social networking platform built on the Internet Computer Protocol (ICP). This platform offers decentralized identity, content sharing, and community governance all without relying on external databases or centralized servers.
 
 Welcome to your new `OnChain360(socialNetworking)` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
 
